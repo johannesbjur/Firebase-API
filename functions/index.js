@@ -40,11 +40,18 @@ app.post('/', async (req, res) => {
     res.status(201).send();
 });
 
-// PUT Funtions
+// PUT Functions
 app.put('/:id', async (req, res) => {
     let body = req.body
 
     await admin.firestore().collection('products').doc(req.params.id).update(body);
+
+    res.status(200).send();
+});
+
+// DELETE Functions
+app.delete('/:id', async (req, res) => {
+    await admin.firestore().collection('products').doc(req.params.id).delete();
 
     res.status(200).send();
 });
