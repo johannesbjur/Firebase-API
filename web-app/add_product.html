@@ -18,27 +18,26 @@
                     <h5 class="card-title">Add Product</h5>
                 </div>
                 <form id="add-form" onsubmit="addSubmit(this)">
+                    <input id="product-id" type="hidden" value="">
                     <div class="form-group row">
-                        <label for="full_name" class="col-md-4 col-form-label text-md-right">Name</label>
+                        <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
                         <div class="col-md-6">
                             <input type="text" id="name" class="form-control" name="full-name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="full_name" class="col-md-4 col-form-label text-md-right">Type</label>
+                        <label for="type" class="col-md-4 col-form-label text-md-right">Type</label>
                         <div class="col-md-6">
                             <input type="text" id="type" class="form-control" name="full-name">
                         </div>
                     </div>
                     <div class="float-right mt-1">
                         <div class="mx-auto">
-                            <a href="./index.html" class="btn btn-secondary mt-3">Back</a>
-                             <button type="submit" class="btn btn-primary mt-3">Add</button>
+                            <button onclick="backClick()" type="button" class="btn btn-secondary mt-3">Back</button>
+                            <button id="submit-btn" type="submit" class="btn btn-primary mt-3">Add</button>
                         </div>
                     </div>
                 </form>
-
-                
             </div>
         </div>
     </div>
@@ -51,7 +50,7 @@
     <script src="./scripts/main.js"></script>
 
     <script>
-        document.getElementById('add-form').addEventListener('submit', (e) => {e.preventDefault()});
+        initializeEdit()
     </script>
 
 </body>
