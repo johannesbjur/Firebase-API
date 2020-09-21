@@ -1,3 +1,3 @@
 # Simple REST API with Firebase
 
-https://youtu.be/iIVlRZIo2-c?t=1191
+https://fir-api-d8bf2.web.app/
