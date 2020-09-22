@@ -47,6 +47,11 @@ function addSubmit(form) {
         "type": form.getElementsByTagName("input")[2].value
     }
 
+    if(!product.name || !product.type) {
+          
+        return document.getElementById("form-alert").style.display = "block";
+    }
+
     if (id) {
         editProduct(id, product).then( res => {
             sessionStorage.clear()
