@@ -11,52 +11,109 @@ app.use(cors({origin: true}));
 
 // GET Functions
 app.get('/', async (req, res) => {
-    let snapshot = await db.collection('products').get();
 
-    let products = [];
-    snapshot.forEach( (doc) => {
-        let id = doc.id;
-        let data = doc.data();
+    try {
+        let snapshot = await db.collection('products').get();
 
-        products.push({ id, ...data });
-    });
+        let products = [];
+        snapshot.forEach( (doc) => {
+            let id = doc.id;
+            let data = doc.data();
 
-    res.status(200).send(JSON.stringify(products));
+            products.push({ id, ...data });
+        });
+
+        res.status(200).send(JSON.stringify(products));
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).send(error.message);
+    }    
 });
 
 app.get('/:id', async (req, res) => {
-    let snapshot = await db.collection('products').doc(req.params.id).get();
 
-    let productId   = snapshot.id;
-    let productData = snapshot.data();
-
-    res.status(200).send(JSON.stringify({ id: productId, ...productData }));
+    try {
+        let product = await db.collection('products').doc(req.params.id).get();
+    
+        if (product.exists) {
+            res.status(200).send(JSON.stringify({ id: product.id, ...product.data() }));
+        }
+        else {
+            res.status(404).send();
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send(error.message);
+    }
 });
 
 // POST Functions
 app.post('/', async (req, res) => {
 
-    let product = req.body;
+    try {
+        let product = req.body;
 
-    await db.collection('products').add(product);
+        if(!product.name || !product.type) {
+            return res.status(400).send("Name and type is required.");
+        }
 
-    res.status(201).send();
+        await db.collection('products').add(product);    
+
+        return res.status(201).send();
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).send(error.message);
+    }
 });
 
 // PUT Functions
 app.put('/:id', async (req, res) => {
-    let body = req.body
 
-    await db.collection('products').doc(req.params.id).update(body);
+    try {
+        let body = req.body
+        
+        if(!body.name && !body.name) {
+            return res.status(400).send();
+        }
 
-    res.status(200).send();
+        let productRef  = await db.collection('products').doc(req.params.id);
+        let product     = await productRef.get();
+
+        if(product.exists) {
+
+            let updateResult = await productRef.update(body); 
+            return res.status(200).send();
+        }
+        
+        return res.status(404).send("Product not found.")
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).send(error.message);
+    }
 });
 
 // DELETE Functions
 app.delete('/:id', async (req, res) => {
-    await db.collection('products').doc(req.params.id).delete();
 
-    res.status(200).send();
+    try {
+        let productRef  = await db.collection('products').doc(req.params.id);
+        let product     = await productRef.get();
+
+        if(product.exists) {
+            let deleteResult = await productRef.delete();
+            return res.status(200).send();
+        }
+
+        return res.status(404).send();
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).send(error.message);
+    }  
 });
 
 exports.product = functions.https.onRequest(app);
